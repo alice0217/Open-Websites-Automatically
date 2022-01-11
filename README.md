@@ -2,7 +2,7 @@
 
 This Desktop GUI APP built with Python & Tkinter opens URL links automatically with a sound effect like class bell and has a database that stores all the essential information so that a user doesn't have to input the same information every time he/she opens the app. 
 
-[Link to Brad's Github](https://github.com.bradtraversy)
+[Link to Source Code](https://github.com/bradtraversy/part_manager)
 
 [Link to Brad's Youtube Channel](https://www.youtube.com/user/TechGuyWeb)
 
