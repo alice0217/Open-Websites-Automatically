@@ -1,21 +1,45 @@
 # URL Opener
 
-This GUI opens URL links with a sound effect at the time pre-set by the user. I followed Brad Traversy's Youtube tutorial. 
-These are links to his Github and Youtube channel: https://github.com/bradtraversy & https://www.youtube.com/user/TechGuyWeb. 
+## Table of Contents
+- [Intro](#intro)
+- [Inspiration](#insipiration)
+- [Interface](#interface)
+- [How to Use it](#how-to-use-it)
+- [Reminders](#reminders)
+- [TODO](#todo)
+
+## Intro: 
+This Desktop GUI APP built with Python & Tkinter opens URL links automatically with a sound effect like class bell and has a database that stores all the essential information so that a user doesn't have to input the same information every time he/she opens the app. 
+
+[Link to Brad's Github](https://github.com.bradtraversy)
+
+[Link to Brad's Youtube Channel](https://www.youtube.com/user/TechGuyWeb)
+
+## Inspiration:
+At the beginning of 2021, I was taking online classes because of COVID-19. Between class breaks, I would sit away from my computer to relax but meanwhile found it annoying to check the time constantly to make sure I would not be late for class. Therefore, I was thinking about making a desktop app to open class zoom links automatically for me. In addition, add a sound effect to remind me in case I'm a little far from my computer. This is my inspiration! :star2:
 
 ## Interface:
   ![WechatIMG2056](https://user-images.githubusercontent.com/71456398/114523986-671e1c80-9c77-11eb-8f3e-5e763d129563.jpeg)
 
 ## How to Use it:
-  1. Enter Weekday in integers from 1 to 5 to represent Monday to Friday. 
-  2. Input hour in 24h form and minute in 2 digits such as, 05 or 50. 
-  3. Input a URL.
-  4. After four entries, click <code>Add</code> to save information in the box below. 
-  5. Information can be edited and deleted in the box. If you want to edit any information, first click the line and the corresponding entries will appear in the entries again. After editing, click <code>Save Changes</code> to save all the chanegs you made. 
-  6. If you want to delete the line, click the line in the box and click <code>Remove</code>. 
-  7. If you want to open the web browser manually, click <code>Start</code>. 
+  1. Enter all essential information. 
+     - Weekday: Enter an integer from 1 to 5 to represent Monday to Friday 
+     - Hour: in 24h form
+     - Minute in 2 digits such as, 05 or 50. 
+     - Link: 
+  4. Input a URL link.
+  5. After four entries, click <code>Add</code> to save information in the table below. 
+  6. If you want to edit anything, click that specific row in the table and the corresponding entries will appear in the entry boxes again. After editing, click <code>Save Changes</code> to save all the changes you made. 
+  7. If you want to delete anything, choose that specific row row in the table and click <code>Remove</code>. 
+  8. If you want to open the web browser manually, click that specific row and click <code>Start</code>. 
 
 ## Reminders:
   1. The web browsers must all start with https://. for example, www.google.com won't work but https://google.com will work. 
-  2. Once any information is edited, restart the APP so that all changed information can be updated to the program. Otherwise, for example, if you set a link to open at 12:13 and you didn't restart the program, the program will be unable to open the link at 12:13 unless you restart the program before 12:13. This also means, once you start the program at 12:14, the web browser scheduled to be opened at 12:13 won't be opened. 
+  2. Once any information is edited, restart the APP so that all changed information can be updated in the database. Otherwise, for example, if you set a link to be open at 12:13 and you didn't restart the program, the web browser won't pop up unless you restart the program before 12:13. 
   3. The time (hour & minute) must be consistent with the time zone of your computer.  
+
+## TODO:
+- Require the user to fill in all entries. 
+- Change "Weekday" (Monday to Friday) to "Day" (Monday to Sunday). 
+- Change entries boxes to something like "radio" input type in HTML to let the user choose input from a limited number of choices to avoid wrong input. 
+- Make the app looks nicer.
