@@ -1,6 +1,6 @@
 # URL Opener
 
-This Desktop GUI APP built with Python using the Tkinter library opens URL links with a sound effect. 
+This Desktop GUI APP built with Python using the Tkinter library opens URL links at a specific time set by the user. 
 
 [Link to Source Code](https://github.com/bradtraversy/part_manager)
 
@@ -10,7 +10,7 @@ This Desktop GUI APP built with Python using the Tkinter library opens URL links
 - [Inspiration](#insipiration)
 - [Interface](#interface)
 - [How to Use it](#how-to-use-it)
-- [Reminders](#reminders)
+- [Notice](#notice)
 - [TODO](#todo)
 
 ## Inspiration:
@@ -20,7 +20,7 @@ At the beginning of 2021, I was taking online classes because of COVID-19. Betwe
   ![WechatIMG2056](https://user-images.githubusercontent.com/71456398/114523986-671e1c80-9c77-11eb-8f3e-5e763d129563.jpeg)
 
 ## How to Use it:
-  1. Enter all essential information. 
+  1. Enter all text inputs. 
      - Weekday: Enter an integer from 1 to 5 to represent Monday to Friday 
      - Hour: in 24h form
      - Minute in 2 digits such as, 05 or 50. 
@@ -30,7 +30,7 @@ At the beginning of 2021, I was taking online classes because of COVID-19. Betwe
   4. If you want to delete anything, choose that specific row row in the table and click <code>Remove</code>. 
   5. If you want to open the web browser manually, click that specific row and click <code>Start</code>. 
 
-## Reminders:
+## Notice:
   1. The web browsers must all start with https://. for example, www.google.com won't work but https://google.com will work. 
   2. Once any information is edited, restart the APP so that all changed information can be updated in the database. Otherwise, for example, if you set a link to be open at 12:13 and you didn't restart the program, the web browser won't pop up unless you restart the program before 12:13. 
   3. The time (hour & minute) must be consistent with the time zone of your computer.  
@@ -39,4 +39,4 @@ At the beginning of 2021, I was taking online classes because of COVID-19. Betwe
 - Require the user to fill in all entries. Flash a message if any input is missing.
 - Change "Weekday" (Monday to Friday) to "Day" (Monday to Sunday). 
 - Change entries boxes to something like "radio" input type in HTML to let the user choose from a limited number of choices to avoid wrong input. 
-- Make the app looks nicer.
+- Make sound effect a choice for the user. 
