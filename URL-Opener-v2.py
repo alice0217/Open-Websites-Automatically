@@ -1,11 +1,14 @@
 from tkinter import *
+from tkinter.ttk import Treeview
+
 from db import Database
-from datetime import datetime
 import webbrowser
 import schedule
 import time
 import threading
 import subprocess
+import validators
+from tkinter import messagebox
 
 # create a database to store the data
 db = Database('timetable.db')
@@ -13,27 +16,35 @@ db = Database('timetable.db')
 # sound effect
 file = "zapsplat_fantasy_magic_ping_wand_90s_style_dreamy_003_64946.mp3"
 
-# populate the list table with data from db
+error_window = False
+
+# commands
+# populate the ListBox with data from db
 def populate_list():
     parts_list.delete(0, END)
     for row in db.fetch():
         parts_list.insert(END, row)
 
-
 def add_item():
+    global error_window
     new_day = day_text.get()
     new_hour = hour_text.get()
     new_minute = minute_text.get()
     new_url = url_text.get()
 
-    db.insert(day_text.get(), hour_text.get(),
-              minute_text.get(), url_text.get())
-    parts_list.delete(0, END)
-    parts_list.insert(END, (day_text.get(), hour_text.get(),
-                            minute_text.get(), url_text.get()))
-    clear_text()
-    populate_list()
-    day[days.index(new_day)].at(("%02d" % int(new_hour)) + ":" + ("%02d" % int(new_minute))).do(job, new_url)
+    if validators.url(new_url):
+        db.insert(day_text.get(), hour_text.get(),
+                  minute_text.get(), url_text.get())
+        parts_list.delete(0, END)
+        parts_list.insert(END, (day_text.get(), hour_text.get(),
+                                minute_text.get(), url_text.get()))
+        clear_text()
+        populate_list()
+        day[days.index(new_day)].at(("%02d" % int(new_hour)) + ":" + ("%02d" % int(new_minute))).do(job, new_url)
+    else:
+        error_window = True
+        messagebox.showerror("Error", "Must input a valid URL!")
+        error_window = False
 
 
 def select_item(event):
@@ -56,14 +67,14 @@ def remove_item():
     populate_list()
 
     schedule.clear()
-    # log_schedule()
-    for n in range(len(today_schedule)):
-        if selected_item[0] != today_schedule[n][0]:
-            weekday = days.index(today_schedule[n][1])
-            hour = int(today_schedule[n][2])
-            minute = int(today_schedule[n][3])
-            zoom = today_schedule[n][4]
+    for n in range(len(whole_schedule)):
+        if selected_item[0] != whole_schedule[n][0]:
+            weekday = days.index(whole_schedule[n][1])
+            hour = int(whole_schedule[n][2])
+            minute = int(whole_schedule[n][3])
+            zoom = whole_schedule[n][4]
             day[weekday].at(("%02d" % hour) + ":" + ("%02d" % minute)).do(job, zoom)
+
 
 def update_item():
     new_day = day_text.get()
@@ -81,21 +92,28 @@ def update_item():
     schedule.clear()
     day[days.index(new_day)].at(("%02d" % int(new_hour)) + ":" + ("%02d" % int(new_minute))).do(job, new_url)
 
-    for n in range(len(today_schedule)):
-        if selected_item[0] != today_schedule[n][0]:
-            weekday = days.index(today_schedule[n][1])
-            hour = int(today_schedule[n][2])
-            minute = int(today_schedule[n][3])
-            zoom = today_schedule[n][4]
+    for i in range(parts_list.size()):
+        item = parts_list.get(i)
+        # item[1] is the day in String
+        whole_schedule.append(item)
+
+    for n in range(len(whole_schedule)):
+        if selected_item[0] != whole_schedule[n][0]:
+            weekday = days.index(whole_schedule[n][1])
+            hour = int(whole_schedule[n][2])
+            minute = int(whole_schedule[n][3])
+            zoom = whole_schedule[n][4]
+            print("yes")
             day[weekday].at(("%02d" % hour) + ":" + ("%02d" % minute)).do(job, zoom)
+
 
 def class_start():
     try:
-        global selected_item2
-        index1 = parts_list.curselection()[0]
-        selected_item2 = parts_list.get(index1)
+        global selected_item
+        index = parts_list.curselection()[0]
+        selected_item = parts_list.get(index)
 
-        webbrowser.open(str(selected_item2[4]), new=2)
+        webbrowser.open(str(selected_item[4]), new=2)
     except IndexError:
         pass
 
@@ -105,6 +123,17 @@ def clear_text():
     hour_text.set(hours[0])
     minute_text.set(minutes[0])
     url_entry.delete(0, END)
+
+
+def show_instructions():
+    messagebox.showinfo("Instructions", "Choose day, hour, minute, and enter a valid URL address.\n"
+                                        "Click 'Add' to add to your schedule.\n"
+                                        "Select the item in the schedule, "
+                                        "then the corresponding entries would show up.\n"
+                                        "Click 'Remove' to remove from your schedule. "
+                                        "Or edit any entry if you want to edit the appointment.\n"
+                                        "Click 'Save Changes' to save the changes you make.\n"
+                                        "Click 'Open' to open the URL manually.")
 
 
 # Create window object
@@ -183,23 +212,24 @@ remove_btn.grid(row=3, column=1)
 edit_btn = Button(app, text='Save Changes', width=12, command=update_item)
 edit_btn.grid(row=3, column=2)
 
-class_btn = Button(app, text="Open", width=12, command=class_start)
-class_btn.grid(row=3, column=3)
+open_btn = Button(app, text="Open", width=12, command=class_start)
+open_btn.grid(row=3, column=3)
+
+instructions_btn = Button(app, text="Instructions", width=12, command=show_instructions)
+instructions_btn.grid(row=3, column=4)
 
 app.title('URL Opener')
-app.geometry('730x350')
+app.geometry('800x350')
 
 populate_list()
 
-# weekday() returns the day as an integer
-today_int = datetime.now().weekday()
-today_schedule = []
+whole_schedule = []
 
 for i in range(parts_list.size()):
     item = parts_list.get(i)
     # item[1] is the day in String
-    if today_int == days.index(item[1]):
-        today_schedule.append(item)
+    whole_schedule.append(item)
+
 
 # opens the url link
 def job(one_link):
@@ -218,14 +248,15 @@ day = [schedule.every().monday,
        schedule.every().sunday]
 
 # plan what to open today
-for n in range(len(today_schedule)):
-    weekday = days.index(today_schedule[n][1])
-    hour = int(today_schedule[n][2])
-    minute = int(today_schedule[n][3])
-    zoom = today_schedule[n][4]
+for n in range(len(whole_schedule)):
+    weekday = days.index(whole_schedule[n][1])
+    hour = int(whole_schedule[n][2])
+    minute = int(whole_schedule[n][3])
+    zoom = whole_schedule[n][4]
     day[weekday].at(("%02d" % hour) + ":" + ("%02d" % minute)).do(job, zoom)
 
-today_schedule.clear()
+whole_schedule.clear()
+
 
 def url_opener():
     while True:
