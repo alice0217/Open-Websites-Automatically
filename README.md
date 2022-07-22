@@ -1,42 +1,49 @@
 # URL Opener
 
-This Desktop GUI APP built with Python using the Tkinter library opens URL links at a specific time set by the user. 
-
-[Link to Source Code](https://github.com/bradtraversy/part_manager)
-
-[Link to Brad Traversy's Youtube Channel](https://www.youtube.com/user/TechGuyWeb)
+This Desktop GUI APP built with Python using the Tkinter library opens URL links scheduled by the user. 
 
 ## Table of Contents
 - [Inspiration](#insipiration)
 - [Interface](#interface)
-- [How to Use it](#how-to-use-it)
+- [Instructions](#instructions)
 - [Notice](#notice)
-- [TODO](#todo)
+- [Changes](#changes)
+- [2021 Version](#2021-version)
 
-## Inspiration:
-At the beginning of 2021, I was taking online classes because of COVID-19. Between class breaks, I would sit away from my computer to relax but meanwhile found it annoying to check the time constantly to make sure I would not be late for class. Therefore, I was thinking about making a desktop app to open class zoom links automatically for me. In addition, add a sound effect to remind me in case I'm a little far from my computer. This is my inspiration! :star2:
+## Inspiration
+In the beginning of 2021, I was taking online classes because of the COVID-19 pandemic. Between class breaks, I would sit away from my laptop to relax but meanwhile found it annoying to check the time constantly to make sure I would not be late for class. Therefore, I was thinking about making an app to open class links aund me in case I'm a little far from my laptop. 
 
-## Interface:
-  ![WechatIMG2056](https://user-images.githubusercontent.com/71456398/114523986-671e1c80-9c77-11eb-8f3e-5e763d129563.jpeg)
+## Interface
+<img width="1100" alt="image" src="https://user-images.githubusercontent.com/71456398/180375246-b6a5f707-76e7-4746-be14-857ea21b5224.png">
 
-## How to Use it:
-  1. Enter all text inputs. 
-     - Weekday: Enter an integer from 1 to 5 to represent Monday to Friday 
-     - Hour: in 24h form
-     - Minute in 2 digits such as, 05 or 50. 
-     - Link: a URL link.
-  2. After four entries, click <code>Add</code> to save information in the table below. 
-  3. If you want to edit anything, click that specific row in the table and the corresponding entries will appear in the entry boxes again. After editing, click <code>Save Changes</code> to save all the changes you made. 
-  4. If you want to delete anything, choose that specific row row in the table and click <code>Remove</code>. 
-  5. If you want to open the web browser manually, click that specific row and click <code>Start</code>. 
+## Instructions
+  1. Enter all inputs. Select a day, hour, minute, and enter a valid URL address. If no valid link is entered, an error window will pop up. 
+  2. After entering, <code>Add</code> to schedule. All appointments can be seen in the table at the bottom.  
+  3. To edit, select the row in the table and the corresponding entries will appear in the entry boxes again. After editing, <code>Save Changes</code> to save all the changes you made. 
+  4. To delete an appointment, select the row in the table and <code>Delete</code>. 
+  5. To open the web browser manually, select the row and <code>Open</code>. 
+  6. To turn on or off bell, click the radio button <code>yes</code> or <code>no</code>. 
 
-## Notice:
-  1. The web browsers must all start with https://. for example, www.google.com won't work but https://google.com will work. 
-  2. Once any information is edited, restart the APP so that all changed information can be updated in the database. Otherwise, for example, if you set a link to be open at 12:13 and you didn't restart the program, the web browser won't pop up unless you restart the program before 12:13. 
-  3. The time (hour & minute) must be consistent with the time zone of your computer.  
-
-## TODO:
-- Require the user to fill in all entries. Flash a message if any input is missing.
-- Change "Weekday" (Monday to Friday) to "Day" (Monday to Sunday). 
-- Change entries boxes to something like "radio" input type in HTML to let the user choose from a limited number of choices to avoid wrong input. 
-- Make sound effect a choice for the user. 
+## Notice
+  1. The web browsers must be a URL address. for example, www.google.com won't work but https://google.com will work. 
+  2. The time (hour & minute) must be consistent with the time zone of your computer.  
+  
+## Changes
+Changes I made since my first version in 2021:
+  1. Made the schedule sync with the database so there's no need to restart the program if the database is changed.
+  2. Made the app throw an error if any entry is missing. 
+  3. Changed "Weekday" to "Day" to add Saturday and Sunday as options. 
+  4. Changed text entry boxes to dropdown menu so that the program doesn't have to check user inputs, and it's more user-friendly. 
+  5. Made bell a choice for the user in case that the user doesn't want any sound. 
+  6. Replaced <code>ListBox</code> with <code>Treeview</code> to make it more user-friendly by showing the user what each column represents. 
+  7. Added a <code>Instructions</code> button for the user to understand how this app works. 
+  8. Used MVC model for easier and faster future modification. 
+  
+ ## 2021 Version
+  ![1](https://user-images.githubusercontent.com/71456398/180378832-561ac578-6147-4102-a086-63f70eae07a7.jpeg)
+ Drawbacks:
+  1. Weekday input is from 1 to 5, which is not user-friendly at all. 
+  2. It doesn't throw an error if any entry is missing. 
+  3. The user has to restart the program if they add, delete, or change anything in order to update the schedule.  
+  4. The schedule table is hard to read without column headers. 
+ 
