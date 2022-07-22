@@ -41,6 +41,7 @@ Changes I made since my first version in 2021:
   
  ## 2021 Version
   ![1](https://user-images.githubusercontent.com/71456398/180378832-561ac578-6147-4102-a086-63f70eae07a7.jpeg)
+ 
  Drawbacks:
   1. Weekday input is from 1 to 5, which is not user-friendly at all. 
   2. It doesn't throw an error if any entry is missing. 
