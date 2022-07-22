@@ -24,6 +24,7 @@ for i in range(60):
 screen_width = 1100
 screen_height = 450
 
+
 # opens web browser
 def job(one_link):
     webbrowser.open(str(one_link), new=2)
@@ -31,44 +32,40 @@ def job(one_link):
         subprocess.call(["afplay", file])
 
 
-def generate_schedule(day_index):
+def generate_schedule(day_index, app_schedule):
     if day_index == 0:
-        return schedule.every().monday
+        return app_schedule.every().monday
     elif day_index == 1:
-        return schedule.every().tuesday
+        return app_schedule.every().tuesday
     elif day_index == 2:
-        return schedule.every().wednesday
+        return app_schedule.every().wednesday
     elif day_index == 3:
-        return schedule.every().thursday
+        return app_schedule.every().thursday
     elif day_index == 4:
-        return schedule.every().friday
+        return app_schedule.every().friday
     elif day_index == 5:
-        return schedule.every().saturday
+        return app_schedule.every().saturday
     elif day_index == 6:
-        return schedule.every().sunday
-
-
-def cancel_job(index):
-    schedule.cancel_job(schedule.get_jobs(tag=index)[0])
+        return app_schedule.every().sunday
 
 
 class Model:
+    """
+    fields:
+        - db represents database
+        - app_schedule represents schedule (Python API)
+    """
     def __init__(self):
         self.db = Database('timetable.db')
-        schedule.clear()
-        self.whole_schedule = []
+        self.app_schedule = schedule
+        self.app_schedule.clear()
+
         for row in self.db.fetch():
-            self.whole_schedule.append(row)
-
-        for n in range(len(self.whole_schedule)):
-            weekday = days.index(self.whole_schedule[n][1])
-            hour = int(self.whole_schedule[n][2])
-            minute = int(self.whole_schedule[n][3])
-            link = self.whole_schedule[n][4]
-            generate_schedule(weekday).at(("%02d" % hour) + ":" + ("%02d" % minute)).do(job, link).tag(
-                self.whole_schedule[n][0])
-
-        self.whole_schedule.clear()
+            weekday = days.index(row[1])
+            hour = int(row[2])
+            minute = int(row[3])
+            link = row[4]
+            generate_schedule(weekday, self.app_schedule).at(("%02d" % hour) + ":" + ("%02d" % minute)).do(job, link).tag(row[0])
 
     def add_to_db(self, day, hour, minute, url):
         self.db.insert(day, hour, minute, url)
@@ -82,12 +79,14 @@ class Model:
     def add_new_job(self, day, hour, minute, url, index):
         if index == -1:
             last_row = self.db.fetchLastRow()
-            generate_schedule(days.index(day)).at(("%02d" % int(hour)) + ":" + ("%02d" % int(minute))).do(job,
-                                                                                                          url).tag(
+            generate_schedule(days.index(day), self.app_schedule).at(
+                ("%02d" % int(hour)) + ":" + ("%02d" % int(minute))).do(job,
+                                                                        url).tag(
                 last_row[0])
         else:
-            generate_schedule(days.index(day)).at(("%02d" % int(hour)) + ":" + ("%02d" % int(minute))).do(job,
-                                                                                                          url).tag(
+            generate_schedule(days.index(day), self.app_schedule).at(
+                ("%02d" % int(hour)) + ":" + ("%02d" % int(minute))).do(job,
+                                                                        url).tag(
                 index)
 
     def retrieve_all_rows(self):
@@ -96,11 +95,15 @@ class Model:
             rows.append(row)
         return rows
 
+    def cancel_job(self, index):
+        self.app_schedule.cancel_job(self.app_schedule.get_jobs(tag=index)[0])
+
 
 class View(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
+        # day entry
         self.day_text = StringVar()
         self.day_label = Label(parent, text='Day', font=('bold', 14), pady=20)
         self.day_text.set('Monday')
@@ -108,6 +111,7 @@ class View(ttk.Frame):
         self.day_label.grid(row=0, column=0, sticky=W)
         self.drop_days.grid(row=0, column=1)
 
+        # hour entry
         self.hour_text = StringVar()
         self.hour_label = Label(parent, text='Hour', font=('bold', 14))
         self.hour_text.set(hours[0])
@@ -115,6 +119,7 @@ class View(ttk.Frame):
         self.hour_label.grid(row=0, column=2, sticky=W)
         self.drop_hours.grid(row=0, column=3)
 
+        # minute entry
         self.minute_text = StringVar()
         self.minute_label = Label(parent, text="Minute", font=('bold', 14))
         self.minute_text.set(minutes[0])
@@ -122,26 +127,31 @@ class View(ttk.Frame):
         self.minute_label.grid(row=1, column=0, sticky=W)
         self.drop_minutes.grid(row=1, column=1)
 
+        # url entry
         self.url_text = StringVar()
         self.url_label = Label(parent, text='URL Link', font=('bold', 14))
         self.url_label.grid(row=1, column=2, sticky=W)
         self.url_entry = Entry(parent, textvariable=self.url_text)
         self.url_entry.grid(row=1, column=3)
 
+        # sound choice
         self.sound_text = IntVar()
         self.sound_label = Label(parent, text='Sound on?', font=('bold', 14))
         self.sound_label.grid(row=2, column=0, sticky=W)
         options = ['Yes', 'No']
         for i in options:
             self.sound_text.set(i)
-        self.sound_radio_yes = Radiobutton(parent, text="Yes", variable=self.sound_text, value=1, command=self.sound_on_clicked)
-        self.sound_radio_no = Radiobutton(parent, text="No", variable=self.sound_text, value=2, command=self.sound_off_clicked)
+        self.sound_radio_yes = Radiobutton(parent, text="Yes", variable=self.sound_text, value=1,
+                                           command=self.sound_on_clicked)
+        self.sound_radio_no = Radiobutton(parent, text="No", variable=self.sound_text, value=2,
+                                          command=self.sound_off_clicked)
         self.sound_text.set(1)
         self.sound_radio_yes.grid(row=2, column=1, sticky=W, pady=20)
         self.sound_radio_no.grid(row=2, column=2, sticky=W, pady=20)
 
         columns = ("apt", "day", "hour", "minute", "link")
 
+        # table
         self.parts_list = Treeview(parent, columns=columns, show="headings")
         self.parts_list.place(x=20, y=200)
         self.parts_list.heading("apt", text="Appointment Index")
@@ -155,6 +165,7 @@ class View(ttk.Frame):
         self.parts_list.configure(yscrollcommand=self.scrollbar.set)
         self.scrollbar.configure(command=self.parts_list.yview)
 
+        # buttons
         self.add_btn = Button(parent, text='Add', width=12, command=self.add_button_clicked)
         self.add_btn.place(x=screen_width * (1 / 6), y=170)
 
@@ -171,6 +182,7 @@ class View(ttk.Frame):
         self.instructions_btn.place(x=screen_width * (5 / 6), y=170)
 
         self.controller = None
+        # the row being selected 
         self.selected_item = None
 
     def set_controller(self, controller):
@@ -241,11 +253,11 @@ class View(ttk.Frame):
 
     def sound_on_clicked(self):
         global file
-        file = None
+        file = "zapsplat_fantasy_magic_ping_wand_90s_style_dreamy_003_64946.mp3"
 
     def sound_off_clicked(self):
         global file
-        file = ""
+        file = None
 
     def clear_text(self):
         self.day_text.set("Monday")
@@ -253,6 +265,8 @@ class View(ttk.Frame):
         self.minute_text.set(minutes[0])
         self.url_entry.delete(0, END)
 
+    # view doesn't communicate with the model directly
+    # therefore, it takes rows as an input
     def populate_parts_list(self, rows):
         for item in self.parts_list.get_children():
             self.parts_list.delete(item)
@@ -260,10 +274,12 @@ class View(ttk.Frame):
         for row in rows:
             self.parts_list.insert("", "end", values=row)
 
+
 class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.view.populate_parts_list(model.retrieve_all_rows())
 
     def add_item(self, day, hour, minute, url):
         self.model.add_to_db(day, hour, minute, url)
@@ -282,6 +298,9 @@ class Controller:
         self.view.populate_parts_list(self.model.retrieve_all_rows())
 
 
+# create a model
+model = Model()
+
 class URL_Opener(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -290,13 +309,9 @@ class URL_Opener(tk.Tk):
         self.title("URL Opener")
         self.geometry(str(screen_width) + "x" + str(screen_height))
 
-        # create a model
-        model = Model()
-
         # create a view and place it on the root window
         view = View(self)
         view.place(x=0, y=0)
-        view.populate_parts_list(model.retrieve_all_rows())
 
         # create a controller
         controller = Controller(model, view)
@@ -307,10 +322,9 @@ class URL_Opener(tk.Tk):
 
 app = URL_Opener()
 
-
 def url_opener():
     while True:
-        schedule.run_pending()
+        model.app_schedule.run_pending()
         time.sleep(1)
 
 
